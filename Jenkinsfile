@@ -6,7 +6,7 @@ def job_result_url = ''
 
 pipeline {
     agent {
-        label 'python3.6'
+        label 'python3.8'
     }
 
     environment {
