@@ -21,9 +21,19 @@ Possible aggregation strategies introduced as *FEDERATED_STRATEGY* (see the impl
 
 The associated Docker container for this module can be found in https://github.com/deephdc/DEEP-OC-federated-server.
 
-We provide some [client examples](./fedserver/client_samples/) as a guide for users.
-Users will need to adapt the `endpoint` in those samples to point to their deployed
+We provide some [client examples](./fedserver/examples/) as a guide for users.
+Users will need to adapt the `uuid` and the `endpoint` in those samples to point to their deployed
 Federated server.
+
+## 🚀 Getting started
+
+1. Deploy a federated server using the [AI4EOSC dashboard](https://dashboard.cloud.ai4eosc.eu/marketplace) (this is a tool inside the marketplace).
+    * _General configuration:_ Give a name and description to the deployment. In service to run select `fedserver`. Save the `federated secret` displayed.
+    * _Hardware configuration:_ Select the number of CPUs you want, the GB of RAM and disk. Remember that you are deploying the server, which will not run ML/DL models.
+    * _Federated configuration:_ Set the number of rounds of the federated learning scheme, the minimum number of clients, the aggregation function, and the error/precision measurement metric (e.g. accuracy).
+2. Once you have deployed the federated server, it will appear in your deployment list as a tool. In the tool's information, you can get the `Deployment ID` (uuid).
+3. Each client of the scheme must enter the endpoint to the server as: `fedserver-{uuid}.deployments.cloud.ai4eosc.eu`. To create the client you can follow the [example presented using MNIST](https://github.com/deephdc/federated-server/blob/main/fedserver/examples/client_mnist/client_mnist.py).
+4. Execute locally the code of each client to start the federated training.
 
 
 ### References
