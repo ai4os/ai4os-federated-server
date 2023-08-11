@@ -17,33 +17,34 @@ import certifi
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
 X_train = np.reshape(X_train, (60000, 28, 28, 1))
-X_train = X_train.astype('float32') / 255
+X_train = X_train.astype("float32") / 255
 X_test = np.reshape(X_test, (10000, 28, 28, 1))
-X_test = X_test.astype('float32') / 255
+X_test = X_test.astype("float32") / 255
 y_train = to_categorical(y_train, 10)
 y_test = to_categorical(y_test, 10)
 
 # Create a new train/test set for ONE CLIENT:
-x_train = X_train[:len(X_train)//30]
-y_train = y_train[:len(X_train)//30]
+x_train = X_train[: len(X_train) // 30]
+y_train = y_train[: len(X_train) // 30]
 
-x_test = X_test[:len(X_test)//30]
-y_test = y_test[:len(X_test)//30]
+x_test = X_test[: len(X_test) // 30]
+y_test = y_test[: len(X_test) // 30]
 
 # Model to be trained:
 model = Sequential()
-model.add(Conv2D(32, (3,3), activation='relu', input_shape=(28, 28, 1)))
-model.add((MaxPooling2D((2,2))))
-model.add(Conv2D(64, (3,3), activation='relu'))
-model.add((MaxPooling2D((2,2))))
-model.add(Conv2D(64, (3,3), activation='relu'))
+model.add(Conv2D(32, (3, 3), activation="relu", input_shape=(28, 28, 1)))
+model.add((MaxPooling2D((2, 2))))
+model.add(Conv2D(64, (3, 3), activation="relu"))
+model.add((MaxPooling2D((2, 2))))
+model.add(Conv2D(64, (3, 3), activation="relu"))
 model.add(Flatten())
-model.add(Dense(64, activation = 'relu'))
-model.add(Dense(10, activation = 'softmax'))
-model.compile(loss = 'categorical_crossentropy',
-              optimizer = 'rmsprop',
-              metrics = ['accuracy'])
+model.add(Dense(64, activation="relu"))
+model.add(Dense(10, activation="softmax"))
+model.compile(
+    loss="categorical_crossentropy", optimizer="rmsprop", metrics=["accuracy"]
+)
 model.summary()
+
 
 # Flower client
 class Client1(fl.client.NumPyClient):
@@ -62,12 +63,12 @@ class Client1(fl.client.NumPyClient):
 
 
 # Start -> connecting with the server
-############## INCLUIDE THE UUID OF THE FL SERVER ##############
-uuid = ... 
+# ---------------- INCLUDE THE UUID OF THE FL SERVER ----------------
+uuid = ...
 end_point = f"fedserver-{uuid}.deployments.cloud.ai4eosc.eu"
-################################################################
+# -------------------------------------------------------------------
 fl.client.start_numpy_client(
-    server_address=f"{end_point}:80", 
+    server_address=f"{end_point}:80",
     client=Client1(),
-    root_certificates=Path(certifi.where()).read_bytes()
+    root_certificates=Path(certifi.where()).read_bytes(),
 )
