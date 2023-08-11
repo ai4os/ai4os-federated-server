@@ -1,19 +1,19 @@
-"""
-Simple image classification example with Keras and MNIST.
-"""
-
-import certifi
-from pathlib import Path
-
 import flwr as fl
 import numpy as np
+from pathlib import Path
+
+from keras.datasets import mnist
+
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from tensorflow.keras.layers import Conv2D
+from tensorflow.keras.layers import MaxPooling2D
+from tensorflow.keras.layers import Flatten
+from tensorflow.keras.layers import Dense
 from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.datasets import mnist
 
+import certifi
 
-# Load and process data:
+# Load and process data:python3
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
 X_train = np.reshape(X_train, (60000, 28, 28, 1))
@@ -23,12 +23,12 @@ X_test = X_test.astype('float32') / 255
 y_train = to_categorical(y_train, 10)
 y_test = to_categorical(y_test, 10)
 
-# Create a new train/test set for client 1:
-x_train = X_train[:len(X_train)//3]
-y_train = y_train[:len(X_train)//3]
+# Create a new train/test set for ONE CLIENT:
+x_train = X_train[:len(X_train)//30]
+y_train = y_train[:len(X_train)//30]
 
-x_test = X_test[:len(X_test)//3]
-y_test = y_test[:len(X_test)//3]
+x_test = X_test[:len(X_test)//30]
+y_test = y_test[:len(X_test)//30]
 
 # Model to be trained:
 model = Sequential()
@@ -61,14 +61,13 @@ class Client1(fl.client.NumPyClient):
         return loss, len(x_test), {"accuracy": accuracy}
 
 
-# Connect with the Flower server
-
-############################  FILL ME  #################################################
-end_point = "fedserver-xxxxxxxxxxxxxx.deployments.cloud.ai4eosc.eu"
-########################################################################################
-
+# Start -> connecting with the server
+############## INCLUIDE THE UUID OF THE FL SERVER ##############
+uuid = ... 
+end_point = f"fedserver-{uuid}.deployments.cloud.ai4eosc.eu"
+################################################################
 fl.client.start_numpy_client(
-    server_address=f"{end_point}:443",
+    server_address=f"{end_point}:80", 
     client=Client1(),
-    root_certificates=Path(certifi.where()).read_bytes(),
-    )
+    root_certificates=Path(certifi.where()).read_bytes()
+)
