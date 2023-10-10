@@ -1,10 +1,12 @@
+import os
 import flwr as fl
 
+FEDERATED_ROUNDS: int = int(os.environ['FEDERATED_ROUNDS'])
+FEDERATED_METRIC: str = os.environ['FEDERATED_METRIC']
+FEDERATED_MIN_CLIENTS: int = int(os.environ['FEDERATED_MIN_CLIENTS'])
+FEDERATED_STRATEGY: str = os.environ['FEDERATED_STRATEGY']
 
-FEDERATED_ROUNDS: int = 2
-FEDERATED_METRIC: str = "accuracy"
-FEDERATED_MIN_CLIENTS: int = 2
-FEDERATED_STRATEGY: str = "fed_avg"  # If None federated average is applied
+
 # Values: fed_avg, fed_prox, fed_opt, fed_adam, fed_yogi
 
 
@@ -16,27 +18,27 @@ def wavg_metric(metrics):
     return {FEDERATED_METRIC: wavg_metric}
 
 
-if FEDERATED_STRATEGY == "fed_avg" or FEDERATED_STRATEGY is None:
+if FEDERATED_STRATEGY == "Federated Averaging" or FEDERATED_STRATEGY is None:
     strategy = fl.server.strategy.FedAvg(
         min_available_clients=FEDERATED_MIN_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
     )
-elif FEDERATED_STRATEGY == "fed_prox":
+elif FEDERATED_STRATEGY == "Federated Optimization":
     strategy = fl.server.strategy.FedProx(
         min_available_clients=FEDERATED_MIN_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
     )
-elif FEDERATED_STRATEGY == "fed_opt":
+elif FEDERATED_STRATEGY == "Federated Optimization'":
     strategy = fl.server.strategy.FedOpt(
         min_available_clients=FEDERATED_MIN_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
     )
-elif FEDERATED_STRATEGY == "fed_adam":
+elif FEDERATED_STRATEGY == "Federated Optimization with Adam":
     strategy = fl.server.strategy.FedAdam(
         min_available_clients=FEDERATED_MIN_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
     )
-elif FEDERATED_STRATEGY == "fed_yogi":
+elif FEDERATED_STRATEGY == "Adaptive Federated Optimization using Yogi":
     strategy = fl.server.strategy.FedYogi(
         min_available_clients=FEDERATED_MIN_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,

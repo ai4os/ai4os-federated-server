@@ -13,7 +13,7 @@ from tensorflow.keras.utils import to_categorical
 
 import certifi
 
-# Load and process data:python3
+# Load and process data:
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
 X_train = np.reshape(X_train, (60000, 28, 28, 1))
@@ -46,17 +46,17 @@ model.compile(
 model.summary()
 
 
-# Flower client
+# Flower client:
 class Client1(fl.client.NumPyClient):
-    def get_parameters(self, config):
+    def get_parameters(self):
         return model.get_weights()
 
-    def fit(self, parameters, config):
+    def fit(self, parameters):
         model.set_weights(parameters)
         model.fit(x_train, y_train, epochs=5, batch_size=32)
         return model.get_weights(), len(x_train), {}
 
-    def evaluate(self, parameters, config):
+    def evaluate(self, parameters):
         model.set_weights(parameters)
         loss, accuracy = model.evaluate(x_test, y_test)
         return loss, len(x_test), {"accuracy": accuracy}
@@ -68,7 +68,7 @@ uuid = ...
 end_point = f"fedserver-{uuid}.deployments.cloud.ai4eosc.eu"
 # -------------------------------------------------------------------
 fl.client.start_numpy_client(
-    server_address=f"{end_point}:80",
+    server_address=f"{end_point}:443",
     client=Client1(),
     root_certificates=Path(certifi.where()).read_bytes(),
 )
