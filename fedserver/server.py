@@ -21,26 +21,31 @@ def wavg_metric(metrics):
 if FEDERATED_STRATEGY == "Federated Averaging" or FEDERATED_STRATEGY is None:
     strategy = fl.server.strategy.FedAvg(
         min_available_clients=FEDERATED_MIN_CLIENTS,
+        min_fit_clients=FEDERATED_MIN_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
     )
 elif FEDERATED_STRATEGY == "Federated Optimization":
     strategy = fl.server.strategy.FedProx(
         min_available_clients=FEDERATED_MIN_CLIENTS,
+        min_fit_clients=FEDERATED_MIN_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
     )
 elif FEDERATED_STRATEGY == "Federated Optimization'":
     strategy = fl.server.strategy.FedOpt(
         min_available_clients=FEDERATED_MIN_CLIENTS,
+        min_fit_clients=FEDERATED_MIN_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
     )
 elif FEDERATED_STRATEGY == "Federated Optimization with Adam":
     strategy = fl.server.strategy.FedAdam(
         min_available_clients=FEDERATED_MIN_CLIENTS,
+        min_fit_clients=FEDERATED_MIN_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
     )
 elif FEDERATED_STRATEGY == "Adaptive Federated Optimization using Yogi":
     strategy = fl.server.strategy.FedYogi(
         min_available_clients=FEDERATED_MIN_CLIENTS,
+        min_fit_clients=FEDERATED_MIN_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
     )
 
