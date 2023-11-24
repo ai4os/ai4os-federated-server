@@ -1,6 +1,6 @@
 #!/usr/bin/groovy
 
-@Library(['github.com/indigo-dc/jenkins-pipeline-library@1.2.3']) _
+@Library(['github.com/indigo-dc/jenkins-pipeline-library@1.4.0']) _
 
 def job_result_url = ''
 
@@ -29,16 +29,7 @@ pipeline {
             }
             post {
                 always {
-                    warnings canComputeNew: false,
-                             canResolveRelativePaths: false,
-                             defaultEncoding: '',
-                             excludePattern: '',
-                             healthy: '',
-                             includePattern: '',
-                             messagesPattern: '',
-                             parserConfigurations: [[parserName: 'PYLint', pattern: '**/flake8.log']],
-                             unHealthy: ''
-                    //WarningsReport('PYLint') // 'Flake8' fails..., consoleParsers does not produce any report...
+                    recordIssues(tools: [flake8(pattern: 'flake8.log')])
                 }
             }
         }
