@@ -1,19 +1,19 @@
 #!/usr/bin/groovy
 
-@Library(['github.com/indigo-dc/jenkins-pipeline-library@1.4.0']) _
+@Library(['github.com/indigo-dc/jenkins-pipeline-library@1.2.3']) _
 
 def job_result_url = ''
 
 pipeline {
     agent {
-        docker { image 'indigodatacloud/ci-images:python3.8' }
+        docker { image 'indigodatacloud/ci-images:python3.10' }
     }
 
     environment {         
-        author_name = "Judith Sáinz-Pardo "         
+        author_name = "Judith Sáinz-Pardo"         
         author_email = "sainzpardo@ifca.unican.es"         
         app_name = "fedserver"         
-        job_location = "Pipeline-as-code/ai4os-hub/DEEP-OC-federated-server/${env.BRANCH_NAME}"     
+        job_location = "Pipeline-as-code/DEEP-OC-org/DEEP-OC-federated-server/${env.BRANCH_NAME}"     
     }
 
     stages {
@@ -29,7 +29,16 @@ pipeline {
             }
             post {
                 always {
-                    recordIssues(tools: [flake8(pattern: 'flake8.log')])
+                    warnings canComputeNew: false,
+                             canResolveRelativePaths: false,
+                             defaultEncoding: '',
+                             excludePattern: '',
+                             healthy: '',
+                             includePattern: '',
+                             messagesPattern: '',
+                             parserConfigurations: [[parserName: 'PYLint', pattern: '**/flake8.log']],
+                             unHealthy: ''
+                    //WarningsReport('PYLint') // 'Flake8' fails..., consoleParsers does not produce any report...
                 }
             }
         }
