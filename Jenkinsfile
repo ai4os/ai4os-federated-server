@@ -42,14 +42,14 @@ pipeline {
             //}
         }
 
-        stage('Metrics gathering') {
-           agent {
-                label 'sloc'
-            }
-            steps {
-                checkout scm
-                SLOCRun()
-            }
+        //stage('Metrics gathering') {
+        //   agent {
+        //        label 'sloc'
+        //    }
+        //    steps {
+        //        checkout scm
+        //        SLOCRun()
+        //    }
         //    post {
         //        success {
         //            SLOCPublish()
@@ -76,7 +76,7 @@ pipeline {
         stage("Re-build Docker images") {
             when {
                 anyOf {
-                   branch 'master'
+                   branch 'main'
                    branch 'test'
                    buildingTag()
                }
@@ -88,39 +88,3 @@ pipeline {
                 }
             }
         }
-
-    }
-
-    post {
-        failure {
-            script {
-                currentBuild.result = 'FAILURE'
-            }
-        }
-
-        always  {
-            script { //stage("Email notification")
-                def build_status =  currentBuild.result
-                build_status =  build_status ?: 'SUCCESS'
-                def subject = """
-New ${app_name} build in Jenkins@DEEP:\
-${build_status}: Job '${env.JOB_NAME}\
-[${env.BUILD_NUMBER}]'"""
-
-                def body = """
-Dear ${author_name},\n\n
-A new build of '${app_name}' DEEP application is available in Jenkins at:\n\n
-*  ${env.BUILD_URL}\n\n
-terminated with '${build_status}' status.\n\n
-Check console output at:\n\n
-*  ${env.BUILD_URL}/console\n\n
-and resultant Docker images rebuilding jobs at (may be empty in case of FAILURE):\n\n
-*  ${job_result_url}\n\n
-
-DEEP Jenkins CI service"""
-
-                EmailSend(subject, body, "${author_email}")
-            }
-        }
-    }
-}
