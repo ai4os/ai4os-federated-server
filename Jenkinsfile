@@ -27,19 +27,6 @@ pipeline {
             steps {
                 ToxEnvRun('pep8')
             }
-            post {
-                always {
-                    warnings canResolveRelativePaths: false,
-                             defaultEncoding: '',
-                             excludePattern: '',
-                             healthy: '',
-                             includePattern: '',
-                             messagesPattern: '',
-                             parserConfigurations: [[parserName: 'PYLint', pattern: '**/flake8.log']],
-                             unHealthy: ''
-                    //WarningsReport('PYLint') // 'Flake8' fails..., consoleParsers does not produce any report...
-                }
-            }
         }
 
         stage('Unit testing coverage') {
