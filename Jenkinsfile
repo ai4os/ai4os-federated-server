@@ -29,8 +29,7 @@ pipeline {
             }
             post {
                 always {
-                    warnings canComputeNew: false,
-                             canResolveRelativePaths: false,
+                    warnings canResolveRelativePaths: false,
                              defaultEncoding: '',
                              excludePattern: '',
                              healthy: '',
