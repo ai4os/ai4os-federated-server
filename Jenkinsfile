@@ -48,12 +48,12 @@ pipeline {
                 ToxEnvRun('cover')
                 ToxEnvRun('cobertura')
             }
-            post {
-                success {
-                    HTMLReport('cover', 'index.html', 'coverage.py report')
-                    CoberturaReport('**/coverage.xml')
-                }
-            }
+            //post {
+            //   success {
+            //        HTMLReport('cover', 'index.html', 'coverage.py report')
+            //        CoberturaReport('**/coverage.xml')
+            //    }
+            //}
         }
 
         stage('Metrics gathering') {
