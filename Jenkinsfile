@@ -55,7 +55,7 @@ pipeline {
         //            SLOCPublish()
         //        }
         //    }
-        }
+        //}
 
         stage('Security scanner') {
             steps {
