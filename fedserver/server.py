@@ -24,13 +24,13 @@ if FEDERATED_STRATEGY == "Federated Averaging" or FEDERATED_STRATEGY is None:
         min_fit_clients=FEDERATED_MIN_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
     )
-elif FEDERATED_STRATEGY == "Federated Optimization":
+elif FEDERATED_STRATEGY == "FedProx Strategy":
     strategy = fl.server.strategy.FedProx(
         min_available_clients=FEDERATED_MIN_CLIENTS,
         min_fit_clients=FEDERATED_MIN_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
     )
-elif FEDERATED_STRATEGY == "Federated Optimization'":
+elif FEDERATED_STRATEGY == "Federated Optim Strategy":
     strategy = fl.server.strategy.FedOpt(
         min_available_clients=FEDERATED_MIN_CLIENTS,
         min_fit_clients=FEDERATED_MIN_CLIENTS,
