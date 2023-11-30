@@ -27,6 +27,11 @@ pipeline {
             steps {
                 ToxEnvRun('pep8')
             }
+            post {
+                always {
+                    recordIssues(tools: [flake8(pattern: 'flake8.log')])
+                }
+            }
         }
 
         stage('Unit testing coverage') {
