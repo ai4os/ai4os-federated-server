@@ -71,11 +71,11 @@ pipeline {
                     }
                }
             }
-            post {
-               always {
-                    HTMLReport("/tmp/bandit", 'index.html', 'Bandit report')
-                }
-            }
+            //post {
+            //   always {
+            //        HTMLReport("/tmp/bandit", 'index.html', 'Bandit report')
+            //    }
+            //}
         }
 
         stage("Re-build Docker images") {
