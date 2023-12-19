@@ -7,15 +7,20 @@ FEDERATED_MIN_CLIENTS: int = int(os.environ['FEDERATED_MIN_CLIENTS'])
 FEDERATED_STRATEGY: str = os.environ['FEDERATED_STRATEGY']
 
 
-# Values: fed_avg, fed_prox, fed_opt, fed_adam, fed_yogi
-
-
 # Weighted average of the metric:
 def wavg_metric(metrics):
     global FEDERATED_METRIC
-    n = sum([i for i, _ in metrics])
-    wavg_metric = sum([i * metric[FEDERATED_METRIC] / n for i, metric in metrics])
-    return {FEDERATED_METRIC: wavg_metric}
+    if isinstance(FEDERATED_METRIC, str):
+        n = sum([i for i, _ in metrics])
+        wavg_metric = sum([i * metric[FEDERATED_METRIC] / n for i, metric in metrics])
+        return {FEDERATED_METRIC: wavg_metric}
+    else:
+        n = sum([i for i, _ in metrics])
+        dict_metrics = {}
+        for fed_metric in FEDERATED_METRIC:
+            wavg_metric = sum([i * metric[fed_metric] / n for i, metric in metrics])
+            dict_metrics[fed_metric] = wavg_metric
+        return dict_metrics
 
 
 if FEDERATED_STRATEGY == "Federated Averaging" or FEDERATED_STRATEGY is None:
