@@ -1,7 +1,7 @@
 import os
 import ast
 import flwr as fl
-from flwr.common import ndarrays_to_parameters,
+from flwr.common import ndarrays_to_parameters
 
 
 FEDERATED_ROUNDS: int = int(os.environ['FEDERATED_ROUNDS'])
