@@ -28,12 +28,13 @@ Federated server.
 ## 🚀 Getting started
 
 1. Deploy a federated server using the [AI4EOSC dashboard](https://dashboard.cloud.ai4eosc.eu/marketplace) (this is a tool inside the marketplace).
-    * _General configuration:_ Give a name and description to the deployment. In service to run select `fedserver`. Save the `federated secret` displayed.
+    * _General configuration:_ Give a name and description to the deployment. In service to run select `JupyterLab` or `VSCode` if you need to start/stop the process and update the server configuration once started. If you only need to monitor the process you can run `fedserver`. In case you want to authenticate the client before connecting with the server, select the docker tag `tokens`, otherwise select `latest`. In case of deployong the server using the docker tag `tokens`, you can generate as many `federated secrets` for authenticating the clients with the server as needed (label them so that you can revoke them if necessary).
     * _Hardware configuration:_ Select the number of CPUs you want, the GB of RAM and disk. Remember that you are deploying the server, which will not run ML/DL models.
     * _Federated configuration:_ Set the number of rounds of the federated learning scheme, the minimum number of clients, the aggregation function, and the error/precision measurement metric (e.g. accuracy).
 2. Once you have deployed the federated server, it will appear in your deployment list as a tool. In the tool's information, you can get the `Deployment ID` (uuid).
 3. Each client of the scheme must enter the endpoint to the server as: `fedserver-{uuid}.deployments.cloud.ai4eosc.eu`. To create the client you can follow the [example presented using MNIST](https://github.com/deephdc/federated-server/blob/main/fedserver/examples/client_mnist/client_mnist.py).
-4. Execute locally the code of each client to start the federated training.
+4. Execute locally the code of each client to start the federated training. Each client must also introduce the token for connecting. 
+
 
 
 ### References
