@@ -9,9 +9,9 @@ FEDERATED_METRIC = os.environ['FEDERATED_METRIC']
 FEDERATED_MIN_FIT_CLIENTS: int = int(os.environ["FEDERATED_MIN_FIT_CLIENTS"])
 FEDERATED_MIN_AVAILABLE_CLIENTS: int = int(os.environ["FEDERATED_MIN_AVAILABLE_CLIENTS"])
 FEDERATED_STRATEGY: str = os.environ['FEDERATED_STRATEGY']
-MU_FEDPROX: float = float(os.environ["MU_FEDPROX"])
-FEDAVGM_SERVER_FL: float = float(os.environ["FEDAVGM_SERVER_FL"])
-FEDAVGM_SERVER_MOMENTUM: float = float(os.environ["FEDAVGM_SERVER_MOMENTUM"])
+MU_FEDPROX = os.environ["MU_FEDPROX"]
+FEDAVGM_SERVER_FL = os.environ["FEDAVGM_SERVER_FL"]
+FEDAVGM_SERVER_MOMENTUM = os.environ["FEDAVGM_SERVER_MOMENTUM"]
 
 
 # Weighted average of the metric:
@@ -34,20 +34,21 @@ def wavg_metric(metrics):
             dict_metrics[fed_metric] = wavg_metric
         return dict_metrics
 
-
-if FEDERATED_STRATEGY == "Federated Averaging" or FEDERATED_STRATEGY is None:
+if FEDERATED_STRATEGY == "Federated Averaging (FedAvg)" or FEDERATED_STRATEGY is None:
     strategy = fl.server.strategy.FedAvg(
         min_available_clients=FEDERATED_MIN_FIT_CLIENTS,
         min_fit_clients=FEDERATED_MIN_AVAILABLE_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
     )
-elif FEDERATED_STRATEGY == "Federated Median":
+elif FEDERATED_STRATEGY == "Federated Median (FedMedian)":
     strategy = fl.server.strategy.FedMedian(
         min_available_clients=FEDERATED_MIN_FIT_CLIENTS,
         min_fit_clients=FEDERATED_MIN_AVAILABLE_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
     )
-elif FEDERATED_STRATEGY == "Federated Averaging with Momentum":
+elif FEDERATED_STRATEGY == "Federated Averaging with Momentum (FedAvgM)":
+    FEDAVGM_SERVER_FL = float(FEDAVGM_SERVER_FL)
+    FEDAVGM_SERVER_MOMENTUM = float(FEDAVGM_SERVER_MOMENTUM)
     strategy = fl.server.strategy.FedAvgM(
         min_available_clients=FEDERATED_MIN_FIT_CLIENTS,
         min_fit_clients=FEDERATED_MIN_AVAILABLE_CLIENTS,
@@ -55,14 +56,15 @@ elif FEDERATED_STRATEGY == "Federated Averaging with Momentum":
         server_learning_rate=FEDAVGM_SERVER_FL,
         server_momentum=FEDAVGM_SERVER_MOMENTUM
     )
-elif FEDERATED_STRATEGY == "FedProx Strategy":
+elif FEDERATED_STRATEGY == "FedProx Strategy (FedProx)":
+    MU_FEDPROX = float(MU_FEDPROX)
     strategy = fl.server.strategy.FedProx(
         min_available_clients=FEDERATED_MIN_FIT_CLIENTS,
         min_fit_clients=FEDERATED_MIN_AVAILABLE_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
         proximal_mu = MU_FEDPROX
     )
-elif FEDERATED_STRATEGY == "Federated Optim Strategy":
+elif FEDERATED_STRATEGY == "Adaptive Federated Optimization (FedOpt)":
     model = tf.keras.models.load_model('initial_model.keras')
     initial_parameters = ndarrays_to_parameters(model.get_weights())
     strategy = fl.server.strategy.FedOpt(
@@ -71,7 +73,7 @@ elif FEDERATED_STRATEGY == "Federated Optim Strategy":
         evaluate_metrics_aggregation_fn=wavg_metric,
         initial_parameters = initial_parameters
     )
-elif FEDERATED_STRATEGY == "Federated Optimization with Adam":
+elif FEDERATED_STRATEGY == "Federated Optimization with Adam (FedAdam)":
     model = tf.keras.models.load_model('initial_model.keras')
     initial_parameters = ndarrays_to_parameters(model.get_weights())
     strategy = fl.server.strategy.FedAdam(
@@ -80,7 +82,7 @@ elif FEDERATED_STRATEGY == "Federated Optimization with Adam":
         evaluate_metrics_aggregation_fn=wavg_metric,
         initial_parameters = initial_parameters
     )
-elif FEDERATED_STRATEGY == "Adaptive Federated Optimization using Yogi":
+elif FEDERATED_STRATEGY == "Adaptive Federated Optimization using Yogi (FedYogi)":
     model = tf.keras.models.load_model('initial_model.keras')
     initial_parameters = ndarrays_to_parameters(model.get_weights())
     strategy = fl.server.strategy.FedYogi(
