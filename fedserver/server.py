@@ -1,6 +1,7 @@
 import os
 import ast
 import flwr as fl
+import tensorflow as tf
 from flwr.common import ndarrays_to_parameters
 
 
