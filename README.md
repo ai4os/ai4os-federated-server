@@ -1,5 +1,5 @@
 # Federated Learning Server
-[![Build Status](https://jenkins.services.ai4os.eu/buildStatus/icon?job=AI4OS-hub/ai4os-federated-server/main)](https://jenkins.services.ai4os.eu/job/AI4OS-hub/job/ai4os-federated-server/job/main/)
+[![Build Status](https://jenkins.services.ai4os.eu/buildStatus/icon?job=AI4OS/ai4os-federated-server/main)](https://jenkins.services.ai4os.eu/job/AI4OS/job/ai4os-federated-server/job/main/)
 
 Federated learning server with [flower](https://github.com/adap/flower).
 
@@ -8,7 +8,7 @@ Federated learning server with [flower](https://github.com/adap/flower).
 Launching the federated learning server:
 ```bash
 git clone https://github.com/ai4os/ai4os-federated-server
-cd federated-server
+cd ai4os-federated-server
 pip install -e .
 python3 fedserver/server.py
 ```
