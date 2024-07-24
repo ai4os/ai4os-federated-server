@@ -1,1 +1,5 @@
+# The following is added by the migration.sh script #
+# Versions are taken from the relevant docker image #
+#
+
 flwr @ git+https://github.com/AI4EOSC/flower@uuid_for_clients
