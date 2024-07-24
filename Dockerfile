@@ -43,12 +43,12 @@ RUN python3 --version && \
 # [1]: https://github.com/pypa/setuptools/issues/3301
 
 # Set LANG environment
-ENV LANG C.UTF-8
+ENV LANG=C.UTF-8
 
 # Set the working directory
 WORKDIR /srv
 
-ENV SHELL /bin/bash
+ENV SHELL=/bin/bash
 
 # Install user app
 RUN git clone --depth 1 -b $branch https://github.com/ai4os/ai4os-federated-server && \
