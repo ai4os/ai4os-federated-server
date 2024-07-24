@@ -5,32 +5,31 @@ def projectConfig
 pipeline {
     agent any
 
+    environment {
+        //JPL_DOCKERSERVER = "https://registry.services.ai4os.euu/"
+        //JPL_DOCKERUSER = "ai4os-hub"
+        //JPL_DOCKERPASS = credentials('AIOS-registry-credentials')
+        APP_DOCKER_IMAGE = "ai4os-federated-server"
+        APP_DOCKER_TAG = "${env.BRANCH_NAME == 'main' ? 'latest' : env.BRANCH_NAME}" 
+    }
+
     stages {
         stage("Variable initialization") {
             steps {
-                checkout scm
                 script {
                     withFolderProperties{
-                        docker_registry = env.AI4OS_REGISTRY
-                        docker_registry_org = env.AI4OS_REGISTRY_REPOSITORY
+                        env.JPL_DOCKERSERVER = env.AI4OS_REGISTRY
+                        env.JPL_DOCKERUSER = env.AI4OS_REGISTRY_REPOSITORY
+                        env.JPL_DOCKERPASS = env.AI4OS_REGISTRY_CREDENTIALS
                     }
-                    // get docker image name from metadata.json
-                    meta = readJSON file: "metadata.json"
-                    image_name = meta["sources"]["docker_registry_repo"].split("/")[1]
-                    app_docker_tag = "${env.BRANCH_NAME == 'main' ? 'latest' : env.BRANCH_NAME}" 
+                    println ("[DEBUG1] Docker image to push: $APP_DOCKER_IMAGE, $env.APP_DOCKER_IMAGE, via $JPL_DOCKERUSER to $JPL_DOCKERSERVER (${env.JPL_DOCKERSERVER})")
                 }
             }
-            environment {
-                AI4OS_REGISTRY_CREDENTIALS = credentials('AIOS-registry-credentials')
-                JPL_DOCKERUSER = AI4OS_REGISTRY_CREDENTIALS_USR
-                JPL_DOCKERPASS = AI4OS_REGISTRY_CREDENTIALS_PSW
-                APP_DOCKER_IMAGE = docker_registry_org + "/" + image_name + ":" + app_docker_tag
-            }
-            println ("[DEBUG] Docker image to push: $APP_DOCKER_IMAGE, via $JPL_DOCKERUSER")
         }
         stage('Application testing') {
             steps {
                 script {
+                    println ("[DEBUG2] Docker image to push: $APP_DOCKER_IMAGE, $env.APP_DOCKER_IMAGE, via $JPL_DOCKERUSER to $JPL_DOCKERSERVER (${env.JPL_DOCKERSERVER})")
                     projectConfig = pipelineConfig()
                     buildStages(projectConfig)
                 }
@@ -47,13 +46,13 @@ pipeline {
                                  name: 'PEP8 report',
                                  id: "flake8_pylint")])
             // publish results of the coverage test
-            publishHTML([allowMissing: false, 
-                                 alwaysLinkToLastBuild: false, 
-                                 keepAll: true, 
-                                 reportDir: "htmlcov", 
-                                 reportFiles: 'index.html', 
-                                 reportName: 'Coverage report', 
-                                 reportTitles: ''])
+            //publishHTML([allowMissing: false, 
+            //                     alwaysLinkToLastBuild: false, 
+            //                     keepAll: true, 
+            //                     reportDir: "htmlcov", 
+            //                     reportFiles: 'index.html', 
+            //                     reportName: 'Coverage report', 
+            //                     reportTitles: ''])
             // publish results of the security check
             publishHTML([allowMissing: false, 
                          alwaysLinkToLastBuild: false, 

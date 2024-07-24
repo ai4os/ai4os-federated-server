@@ -20,4 +20,4 @@ services:
         dockerfile: "Dockerfile"
         args:
           branch: ${GIT_BRANCH}
-     image: "${APP_DOCKER_IMAGE}"
+     image: "${JPL_DOCKERUSER}/${APP_DOCKER_IMAGE}:${APP_DOCKER_TAG}"
