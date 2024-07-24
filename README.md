@@ -1,5 +1,5 @@
 # Federated Learning Server
-[![Build Status](https://jenkins.indigo-datacloud.eu/buildStatus/icon?job=Pipeline-as-code/DEEP-OC-org/federated-server/main)](https://jenkins.indigo-datacloud.eu/job/Pipeline-as-code/job/DEEP-OC-org/job/federated-server/job/main)
+[![Build Status](https://jenkins.services.ai4os.eu/buildStatus/icon?job=AI4OS-hub/ai4os-federated-server/main)](https://jenkins.services.ai4os.eu/job/AI4OS-hub/job/ai4os-federated-server/job/main/)
 
 Federated learning server with [flower](https://github.com/adap/flower).
 
@@ -7,7 +7,7 @@ Federated learning server with [flower](https://github.com/adap/flower).
 
 Launching the federated learning server:
 ```bash
-git clone https://github.com/deephdc/federated-server
+git clone https://github.com/ai4os/ai4os-federated-server
 cd federated-server
 pip install -e .
 python3 fedserver/server.py
@@ -19,7 +19,7 @@ Possible aggregation strategies introduced as *FEDERATED_STRATEGY* (see the impl
 * **Federated Optim strategy**: *"fed_opt"* [3]
 * **Adaptive Federated Optimization using Yogi:** *"fed_yogi"* [3]
 
-The associated Docker container for this module can be found in https://github.com/deephdc/DEEP-OC-federated-server.
+The associated Docker container for this module can be found in https://github.com/ai4os/ai4os-federated-server.
 
 We provide some [client examples](./fedserver/examples/) as a guide for users.
 Users will need to adapt the `uuid` and the `endpoint` in those samples to point to their deployed
@@ -32,7 +32,7 @@ Federated server.
     * _Hardware configuration:_ Select the number of CPUs you want, the GB of RAM and disk. Remember that you are deploying the server, which will not run ML/DL models.
     * _Federated configuration:_ Set the number of rounds of the federated learning scheme, the minimum number of clients, the aggregation function, and the error/precision measurement metric (e.g. accuracy).
 2. Once you have deployed the federated server, it will appear in your deployment list as a tool. In the tool's information, you can get the `Deployment ID` (uuid).
-3. Each client of the scheme must enter the endpoint to the server as: `fedserver-{uuid}.deployments.cloud.ai4eosc.eu`. To create the client you can follow the [example presented using MNIST](https://github.com/deephdc/federated-server/blob/main/fedserver/examples/client_mnist/client_mnist.py).
+3. Each client of the scheme must enter the endpoint to the server as: `fedserver-{uuid}.deployments.cloud.ai4eosc.eu`. To create the client you can follow the [example presented using MNIST](https://github.com/ai4os/ai4os-federated-server/blob/main/fedserver/examples/client_mnist/client_mnist.py).
 4. Execute locally the code of each client to start the federated training. Each client must also introduce the token for connecting. 
 
 
