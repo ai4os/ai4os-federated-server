@@ -12,16 +12,21 @@ pipeline {
                 script {
                     withFolderProperties{
                         docker_registry = env.AI4OS_REGISTRY
-                        docker_registry_credentials = env.AI4OS_REGISTRY_CREDENTIALS
                         docker_registry_org = env.AI4OS_REGISTRY_REPOSITORY
                     }
                     // get docker image name from metadata.json
                     meta = readJSON file: "metadata.json"
                     image_name = meta["sources"]["docker_registry_repo"].split("/")[1]
                     app_docker_tag = "${env.BRANCH_NAME == 'main' ? 'latest' : env.BRANCH_NAME}" 
-                    APP_DOCKER_IMAGE = docker_registry_org + "/" + image_name + ":" + app_docker_tag
                 }
             }
+            environment {
+                AI4OS_REGISTRY_CREDENTIALS = credentials('AIOS-registry-credentials')
+                JPL_DOCKERUSER = AI4OS_REGISTRY_CREDENTIALS_USR
+                JPL_DOCKERPASS = AI4OS_REGISTRY_CREDENTIALS_PSW
+                APP_DOCKER_IMAGE = docker_registry_org + "/" + image_name + ":" + app_docker_tag
+            }
+            println ("[DEBUG] Docker image to push: $APP_DOCKER_IMAGE, via $JPL_DOCKERUSER")
         }
         stage('Application testing') {
             steps {

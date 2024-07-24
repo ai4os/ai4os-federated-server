@@ -1,10 +1,4 @@
 # .sqa/config.yml - jenkins-pipeline-library configuration file
-config:
-  credentials:
-    - id: AIOS-registry-credentials
-      username_var: JPL_DOCKERUSER
-      password_var: JPL_DOCKERPASS
-
 environment:
   JPL_DOCKERPUSH: "ai4os-federated-server"
   JPL_DOCKERFORCEREBUILD: "True"
