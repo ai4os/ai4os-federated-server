@@ -19,7 +19,7 @@ Possible aggregation strategies introduced as *FEDERATED_STRATEGY* (see the impl
 * **Federated Optim strategy**: *"fed_opt"* [3]
 * **Adaptive Federated Optimization using Yogi:** *"fed_yogi"* [3]
 
-The associated Docker container for this module can be found in https://github.com/ai4os/ai4os-federated-server.
+The associated Docker image(s) for this module can be found in https://hub.docker.com/r/ai4oshub/ai4os-federated-server.
 
 We provide some [client examples](./fedserver/examples/) as a guide for users.
 Users will need to adapt the `uuid` and the `endpoint` in those samples to point to their deployed
