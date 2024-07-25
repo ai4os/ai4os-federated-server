@@ -7,8 +7,6 @@
 # or using default args:
 # $ docker build -t <dockerhub_user>/<dockerhub_repo> .
 #
-# [!] Note: For the Jenkins CI/CD pipeline, input args are defined inside the
-# Jenkinsfile, not here!
 
 ARG tag=3.10-bookworm
 

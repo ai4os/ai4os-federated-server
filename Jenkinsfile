@@ -2,40 +2,83 @@
 
 def projectConfig
 
+// function to remove built images
+def docker_clean() {
+    def dangling_images = sh(
+	returnStdout: true,
+	script: "docker images -f 'dangling=true' -q"
+    )
+    if (dangling_images) {
+        sh(script: "docker rmi --force $dangling_images")
+    }
+}
+
 pipeline {
     agent any
 
     environment {
-        //JPL_DOCKERSERVER = "https://registry.services.ai4os.euu/"
-        //JPL_DOCKERUSER = "ai4os-hub"
-        //JPL_DOCKERPASS = credentials('AIOS-registry-credentials')
-        APP_DOCKER_IMAGE = "ai4os-federated-server"
-        APP_DOCKER_TAG = "${env.BRANCH_NAME == 'main' ? 'latest' : env.BRANCH_NAME}" 
+        AI4OS_REGISTRY_CREDENTIALS = credentials('AIOS-registry-credentials')
+        APP_DOCKERFILE = "Dockerfile"
     }
 
     stages {
         stage("Variable initialization") {
             steps {
                 script {
+                    checkout scm
                     withFolderProperties{
-                        env.JPL_DOCKERSERVER = env.AI4OS_REGISTRY
-                        env.JPL_DOCKERUSER = env.AI4OS_REGISTRY_REPOSITORY
-                        env.JPL_DOCKERPASS = env.AI4OS_REGISTRY_CREDENTIALS
+                        env.DOCKER_REGISTRY = env.AI4OS_REGISTRY
+                        env.DOCKER_REGISTRY_ORG = env.AI4OS_REGISTRY_REPOSITORY
+                        env.DOCKER_REGISTRY_CREDENTIALS = env.AI4OS_REGISTRY_CREDENTIALS
                     }
-                    println ("[DEBUG1] Docker image to push: $APP_DOCKER_IMAGE, $env.APP_DOCKER_IMAGE, via $JPL_DOCKERUSER to $JPL_DOCKERSERVER (${env.JPL_DOCKERSERVER})")
+                    // get docker image name from metadata.json
+                    meta = readJSON file: "metadata.json"
+                    image_name = meta["sources"]["docker_registry_repo"].split("/")[1]
+                    // define tag based on branch
+                    image_tag = "${env.BRANCH_NAME == 'main' ? 'latest' : env.BRANCH_NAME}" 
+                    env.DOCKER_REPO = env.DOCKER_REGISTRY_ORG + "/" + image_name + ":" + image_tag
+                    env.DOCKER_REPO = env.DOCKER_REPO.toLowerCase()
+                    println ("[DEBUG] Docker image to build: $env.DOCKER_REPO, push to $env.DOCKER_REGISTRY")
+                    sh(script: "docker login -u ai4os-hub -p $env.DOCKER_REGISTRY_CREDENTIALS $env.DOCKER_REGISTRY")
                 }
             }
         }
+
         stage('Application testing') {
             steps {
                 script {
-                    println ("[DEBUG2] Docker image to push: $APP_DOCKER_IMAGE, $env.APP_DOCKER_IMAGE, via $JPL_DOCKERUSER to $JPL_DOCKERSERVER (${env.JPL_DOCKERSERVER})")
                     projectConfig = pipelineConfig()
                     buildStages(projectConfig)
                 }
             }
         }
+
+        stage("Docker image building & delivery") {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'tokens'
+                    branch 'release/*'
+                }
+            }
+            steps {
+                script {
+                    checkout scm
+                    docker.withRegistry(env.DOCKER_REGISTRY, env.DOCKER_REGISTRY_CRDENTIALS){
+                         def app_image = docker.build(env.DOCKER_REPO,
+                                                      "--no-cache --force-rm --build-arg branch=${env.BRANCH_NAME} -f ${env.APP_DOCKERFILE} .")
+                         app_image.push()
+                    }
+                }
+            }
+            post {
+                failure {
+                    docker_clean()
+                }
+            }
+        }
     }
+
     post {
         // publish results and clean-up
         always {
@@ -61,9 +104,10 @@ pipeline {
                          reportFiles: 'index.html', 
                          reportName: 'Bandit report', 
                          reportTitles: ''])
+
             // Clean after build
             cleanWs()
-        }    
+        }
     }
 }
 

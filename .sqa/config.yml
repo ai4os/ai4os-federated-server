@@ -1,7 +1,5 @@
 # .sqa/config.yml - jenkins-pipeline-library configuration file
 environment:
-  JPL_DOCKERPUSH: "ai4os-federated-server"
-  JPL_DOCKERFORCEREBUILD: "True"
   LANG: C.UTF-8
 
 sqa_criteria:

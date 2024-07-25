@@ -13,11 +13,3 @@ services:
       - type: bind
         source: ./
         target: /srv
-
-  ai4os-federated-server:
-     build:
-        context: "."
-        dockerfile: "Dockerfile"
-        args:
-          branch: ${GIT_BRANCH}
-     image: "${JPL_DOCKERUSER}/${APP_DOCKER_IMAGE}:${APP_DOCKER_TAG}"
