@@ -19,5 +19,5 @@
   "continuous_integration": {
     "build_status_badge": "https://jenkins.services.ai4os.eu/buildStatus/icon?job=AI4OS/ai4os-federated-server/main",
     "build_status_url": "https://jenkins.services.ai4os.eu/job/AI4OS/job/ai4os-federated-server/job/main/"
-  },
+  }
 }
