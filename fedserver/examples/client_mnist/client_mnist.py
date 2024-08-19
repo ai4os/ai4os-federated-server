@@ -63,10 +63,10 @@ class Client1(fl.client.NumPyClient):
 
 
 # Start -> connecting with the server
-# ---------------- INCLUDE THE UUID OF THE FL SERVER ----------------
-uuid = ...
-end_point = f"fedserver-{uuid}.deployments.cloud.ai4eosc.eu"
-# -------------------------------------------------------------------
+# ---------------- INCLUDE THE UUID OF THE FL SERVER ---------------------------
+uuid = ... # UUID of the deployment with the server
+end_point = f"fedserver-{uuid}.deployments.cloud.ai4eosc.eu" # Update if needed
+# ------------------------------------------------------------------------------
 fl.client.start_numpy_client(
     server_address=f"{end_point}:443",
     client=Client1(),
