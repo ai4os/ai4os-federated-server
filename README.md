@@ -13,11 +13,13 @@ pip install -e .
 python3 fedserver/server.py
 ```
 Possible aggregation strategies introduced as *FEDERATED_STRATEGY* (see the implementation given in [flower strategies](https://flower.dev/docs/apiref-flwr.html#)):
-* **Federated average:** *"fed_avg"*. [1]
-* **FedProx strategy:** *"fed_prox"*. [2]
-* **Adaptive Federated Optimization using Adam:** *"fed_adam"* [3]
-* **Federated Optim strategy**: *"fed_opt"* [3]
-* **Adaptive Federated Optimization using Yogi:** *"fed_yogi"* [3]
+* **Federated average** *(FedAvg)*. [1]
+* **FedProx strategy** *(FedProx)*. [2]
+* **Adaptive Federated Optimization using Adam** *(FedAdam)* [3]
+* **Federated Optim strategy** *(FedOpt)* [3]
+* **Adaptive Federated Optimization using Yogi** *(FedYogi)* [3]
+* **Federated Averaging with Momentum** *(FedAvgM)* [4]
+* **Federated Median** *(FedMedian)* [5]
 
 The associated Docker image(s) for this module can be found in https://hub.docker.com/r/ai4oshub/ai4os-federated-server.
 
@@ -44,3 +46,7 @@ Federated server.
 [2] Li, T., Sahu, A. K., Zaheer, M., Sanjabi, M., Talwalkar, A., & Smith, V. (2020). Federated optimization in heterogeneous networks. Proceedings of Machine learning and systems, 2, 429-450.
 
 [3] Reddi, S., Charles, Z., Zaheer, M., Garrett, Z., Rush, K., Konečný, J., ... & McMahan, H. B. (2020). Adaptive federated optimization. arXiv preprint arXiv:2003.00295.
+
+[4] Hsu, T. M. H., Qi, H., & Brown, M. (2019). Measuring the effects of non-identical data distribution for federated visual classification. arXiv preprint arXiv:1909.06335.
+
+[5] Yin, D., Chen, Y., Kannan, R., & Bartlett, P. (2018, July). Byzantine-robust distributed learning: Towards optimal statistical rates. In International conference on machine learning (pp. 5650-5659). Pmlr.
