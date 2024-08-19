@@ -14,7 +14,7 @@ from tensorflow.keras.utils import to_categorical
 
 import ai4flwr.auth.bearer
 
-token = "..."  # Token given by the server
+# token = "..." # Introduce the token given by the server
 
 # Load and process MNIST data
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
