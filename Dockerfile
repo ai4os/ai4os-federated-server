@@ -46,6 +46,11 @@ ENV LANG=C.UTF-8
 # Set the working directory
 WORKDIR /srv
 
+# Initialization scripts
+# deep-start can install JupyterLab or VSCode if requested
+RUN git clone https://github.com/ai4os/deep-start /srv/.deep-start && \
+    ln -s /srv/.deep-start/deep-start.sh /usr/local/bin/deep-start
+
 ENV SHELL=/bin/bash
 
 # Install user app
