@@ -3,3 +3,4 @@
 #
 
 flwr @ git+https://github.com/AI4EOSC/flower@uuid_for_clients
+tensorflow >= 2.12
