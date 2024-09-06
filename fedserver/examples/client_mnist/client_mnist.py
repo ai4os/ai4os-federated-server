@@ -50,7 +50,7 @@ model.summary()
 
 
 # Flower client
-class Client(fl.client.NumPyClient):
+class Client1(fl.client.NumPyClient):
     def get_parameters(self, config):
         return model.get_weights()
 
@@ -67,11 +67,15 @@ class Client(fl.client.NumPyClient):
 
 auth_plugin = ai4flwr.auth.bearer.BearerTokenAuthPlugin(token)
 
-uuid = "..."  # UUID of the deployment where the server is started
-end_point = f"fedserver-{uuid}.deployments.cloud.ai4eosc.eu"
+# Start -> connecting with the server
+# ---------------- INCLUDE THE UUID OF THE FL SERVER ------------------------------------
+uuid = ... # UUID of the deployment with the server
+center = ... # Probably ifca or iisas
+end_point = f"fedserver-{uuid}.{center}-deployments.cloud.ai4eosc.eu" # Update if needed
+# ---------------------------------------------------------------------------------------
 fl.client.start_client(
     server_address=f"{end_point}:443",
     root_certificates=pathlib.Path(certifi.where()).read_bytes(),
-    client=Client(),
+    client=Client1().to_client(),
     call_credentials=auth_plugin.call_credentials(),
 )
