@@ -48,15 +48,15 @@ model.summary()
 
 # Flower client:
 class Client1(fl.client.NumPyClient):
-    def get_parameters(self):
+    def get_parameters(self, config):
         return model.get_weights()
 
-    def fit(self, parameters):
+    def fit(self, parameters, config):
         model.set_weights(parameters)
         model.fit(x_train, y_train, epochs=5, batch_size=32)
         return model.get_weights(), len(x_train), {}
 
-    def evaluate(self, parameters):
+    def evaluate(self, parameters, config):
         model.set_weights(parameters)
         loss, accuracy = model.evaluate(x_test, y_test)
         return loss, len(x_test), {"accuracy": accuracy}
@@ -65,10 +65,11 @@ class Client1(fl.client.NumPyClient):
 # Start -> connecting with the server
 # ---------------- INCLUDE THE UUID OF THE FL SERVER ---------------------------
 uuid = ... # UUID of the deployment with the server
-end_point = f"fedserver-{uuid}.deployments.cloud.ai4eosc.eu" # Update if needed
+center = ... # Probably ifca or iisas
+end_point = f"fedserver-{uuid}.{center}-deployments.cloud.ai4eosc.eu" # Update if needed
 # ------------------------------------------------------------------------------
-fl.client.start_numpy_client(
+fl.client.start_client(
     server_address=f"{end_point}:443",
-    client=Client1(),
+    client=Client1().to_client(),
     root_certificates=Path(certifi.where()).read_bytes(),
 )
