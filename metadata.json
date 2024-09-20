@@ -1,21 +1,21 @@
 {
-  "title": "Federated learning server",
-  "summary": "Federated learning server with Flower",
-  "description": "Federated Learning server deployed using Flower.\n",
-  "keywords": [
-    "docker",
-    "api-v2"
-  ],
-  "license": "Apache 2.0",
-  "date_creation": "2023-06-28",
-  "sources": {
-    "dockerfile_repo": "https://github.com/ai4os/ai4os-federated-server",
-    "docker_registry_repo": "ai4oshub/ai4os-federated-server",
-    "code": "https://github.com/ai4os/ai4os-federated-server",
-    "ai4_template": "ai4-template/1.9.9"
-  },
-  "continuous_integration": {
-    "build_status_badge": "https://jenkins.services.ai4os.eu/buildStatus/icon?job=AI4OS/ai4os-federated-server/main",
-    "build_status_url": "https://jenkins.services.ai4os.eu/job/AI4OS/job/ai4os-federated-server/job/main/"
-  }
+    "title": "Federated learning server",
+    "summary": "Federated learning server with Flower",
+    "description": "Federated Learning server deployed using Flower.\n",
+    "keywords": [
+        "docker",
+        "api-v2"
+    ],
+    "license": "Apache 2.0",
+    "date_creation": "2023-06-28",
+    "sources": {
+        "dockerfile_repo": "https://github.com/ai4os/ai4os-federated-server",
+        "docker_registry_repo": "ai4oshub/ai4os-federated-server",
+        "code": "https://github.com/ai4os/ai4os-federated-server",
+        "ai4_template": "ai4-template/1.9.9"
+    },
+    "continuous_integration": {
+        "build_status_badge": "https://jenkins.services.ai4os.eu/buildStatus/icon?job=AI4OS/ai4os-federated-server/main",
+        "build_status_url": "https://jenkins.services.ai4os.eu/job/AI4OS/job/ai4os-federated-server/job/main/"
+    }
 }
