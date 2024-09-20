@@ -1,7 +1,13 @@
 {
     "title": "Federated learning server",
     "summary": "Federated learning server with Flower",
-    "description": "Federated Learning server deployed using Flower.\n",
+    "description": [
+        "Federated Learning server deployed using Flower.\n",
+        "Run your federated learning (FL) application from scratch with the server running on AI4EOSC.\n", 
+        "The FL clients can be deployed in external cloud machines, locally in their own workstations, or on the AI4EOSC platform (accessing to GPUs and other computing resources).\n", 
+        "With this tool you can train global machine/deep learning model on different clients in a distributed way following a federated learning architecture.\n",
+        "Customize the number of rounds the FL training is performed, the aggregation strategy used, the minimum number of clients, and the error metric to be used among others.\n"
+    ],
     "keywords": [
         "docker",
         "api-v2"
