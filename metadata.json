@@ -6,8 +6,6 @@
     "Run your federated learning (FL) application from scratch with the server running on AI4EOSC. The FL clients can be deployed in external cloud machines, locally in their own workstations, or on the AI4EOSC platform (accessing to GPUs and other computing resources).\n", 
     "With this tool you can train global machine/deep learning model on different clients in a distributed way following a federated learning architecture.\n",
     "Customization is allowed for the number of rounds the training is performed, the aggregation strategy used, the minimum number of clients, and the error metric to be used (aggregated) as validation, etc.\n",
-    
-    
   ],
   "keywords": [
     "docker",
