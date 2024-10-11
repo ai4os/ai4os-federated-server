@@ -57,7 +57,7 @@ elif FEDERATED_STRATEGY == "Federated Averaging with Momentum (FedAvgM)":
         server_learning_rate=FEDAVGM_SERVER_FL,
         server_momentum=FEDAVGM_SERVER_MOMENTUM
     )
-elif FEDERATED_STRATEGY == "FedProx Strategy (FedProx)":
+elif FEDERATED_STRATEGY == "FedProx strategy (FedProx)":
     MU_FEDPROX = float(MU_FEDPROX)
     strategy = fl.server.strategy.FedProx(
         min_available_clients=FEDERATED_MIN_FIT_CLIENTS,
