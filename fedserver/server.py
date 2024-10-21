@@ -50,7 +50,19 @@ elif FEDERATED_STRATEGY == "Federated Median (FedMedian)":
 elif FEDERATED_STRATEGY == "Federated Averaging with Momentum (FedAvgM)":
     FEDAVGM_SERVER_FL = float(FEDAVGM_SERVER_FL)
     FEDAVGM_SERVER_MOMENTUM = float(FEDAVGM_SERVER_MOMENTUM)
-    strategy = fl.server.strategy.FedAvgM(
+    if FEDAVGM_SERVER_MOMENTUM > 0:
+        model = tf.keras.models.load_model('initial_model.keras')
+        initial_parameters = ndarrays_to_parameters(model.get_weights())
+        strategy = fl.server.strategy.FedAvgM(
+        min_available_clients=FEDERATED_MIN_FIT_CLIENTS,
+        min_fit_clients=FEDERATED_MIN_AVAILABLE_CLIENTS,
+        evaluate_metrics_aggregation_fn=wavg_metric,
+        server_learning_rate=FEDAVGM_SERVER_FL,
+        server_momentum=FEDAVGM_SERVER_MOMENTUM,
+        initial_parameters = initial_parameters
+    )
+    else:
+        strategy = fl.server.strategy.FedAvgM(
         min_available_clients=FEDERATED_MIN_FIT_CLIENTS,
         min_fit_clients=FEDERATED_MIN_AVAILABLE_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
