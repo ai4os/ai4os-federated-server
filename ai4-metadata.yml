@@ -10,7 +10,7 @@ description: |-
   
   Customize the number of rounds the FL training is performed, the aggregation strategy used, the minimum number of clients, and the error metric to be used among other settings.
 
-  <img class='fit', src='https://www.researchgate.net/figure/Scheme-of-a-federated-learning-approach_fig2_362088869'/>
+  <img class='fit', src='https://www.researchgate.net/publication/362088869/figure/fig2/AS:1179390767575052@1658200079112/Scheme-of-a-federated-learning-approach.png'/>
   
 dates:
   created: '2023-06-28'
