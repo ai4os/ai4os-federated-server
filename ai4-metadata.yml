@@ -9,6 +9,9 @@ description: |-
   With this tool you can train global machine/deep learning model on different clients in a distributed way following a federated learning architecture.
   
   Customize the number of rounds the FL training is performed, the aggregation strategy used, the minimum number of clients, and the error metric to be used among other settings.
+
+  <img class='fit', src='https://www.researchgate.net/figure/Scheme-of-a-federated-learning-approach_fig2_362088869'/>
+  
 dates:
   created: '2023-06-28'
   updated: '2024-08-12'
