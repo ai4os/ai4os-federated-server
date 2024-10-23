@@ -3,6 +3,7 @@ import ast
 import flwr as fl
 import tensorflow as tf
 from flwr.common import ndarrays_to_parameters
+from flwr.server.strategy import DifferentialPrivacyServerSideFixedClipping
 
 
 FEDERATED_ROUNDS: int = int(os.environ['FEDERATED_ROUNDS'])
@@ -13,6 +14,10 @@ FEDERATED_STRATEGY: str = os.environ['FEDERATED_STRATEGY']
 MU_FEDPROX = os.environ["MU_FEDPROX"]
 FEDAVGM_SERVER_FL = os.environ["FEDAVGM_SERVER_FL"]
 FEDAVGM_SERVER_MOMENTUM = os.environ["FEDAVGM_SERVER_MOMENTUM"]
+DP_BOOL: bool = os.environ['DP']
+NOISE_MULTIPLIER = os.environ["NOISE_MULT"]
+CLIPPING_NORM = os.environ["CLIP_NORM"]
+SAMPLED_CLIENTS: int = int(os.environ['SAMPLED_CLIENTS'])
 
 
 # Weighted average of the metric:
@@ -105,9 +110,20 @@ elif FEDERATED_STRATEGY == "Adaptive Federated Optimization using Yogi (FedYogi)
         initial_parameters = initial_parameters
     )
 
-# Flower server:
-fl.server.start_server(
-    server_address="0.0.0.0:5000",
-    config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
-    strategy=strategy,
-)
+
+if bool(DP_BOOL):
+    dp_strategy = DifferentialPrivacyServerSideFixedClipping(
+        strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
+    
+    )
+    fl.server.start_server(
+        server_address="0.0.0.0:5000",
+        config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
+        strategy=dp_strategy,
+    )
+else:
+    fl.server.start_server(
+        server_address="0.0.0.0:5000",
+        config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
+        strategy=strategy,
+    )
