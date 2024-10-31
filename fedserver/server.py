@@ -7,6 +7,7 @@ from ai4flwr.auth import vault
 import tensorflow as tf
 from flwr.common.logger import log
 from flwr.common import ndarrays_to_parameters
+from flwr.server.strategy import DifferentialPrivacyServerSideFixedClipping
 
 INFO = logging.INFO
 
@@ -21,6 +22,10 @@ FEDAVGM_SERVER_MOMENTUM = os.environ["FEDAVGM_SERVER_MOMENTUM"]
 UUID: str = os.environ["NOMAD_JOB_NAME"][8:]
 USER: str = os.environ["NOMAD_META_owner"]
 VAULT_TOKEN: str = os.environ["VAULT_TOKEN"]
+DP_BOOL: bool = os.environ['DP']
+NOISE_MULTIPLIER = os.environ["NOISE_MULT"]
+CLIPPING_NORM = os.environ["CLIP_NORM"]
+SAMPLED_CLIENTS: int = int(os.environ['SAMPLED_CLIENTS'])
 
 
 # Weighted average of the metric:
@@ -111,10 +116,21 @@ token_interceptor = ai4flwr.auth.vault.VaultBearerTokenInterceptor(
 
 log(INFO, "Token interceptor created")
 
-# Flower server:
-fl.server.start_server(
-    server_address="0.0.0.0:5000",
-    config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
-    strategy=strategy,
-    interceptors=[token_interceptor],
-)
+if bool(DP_BOOL):
+    dp_strategy = DifferentialPrivacyServerSideFixedClipping(
+        strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
+    
+    )
+    fl.server.start_server(
+        server_address="0.0.0.0:5000",
+        config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
+        strategy=dp_strategy,
+        interceptors=[token_interceptor],
+    )
+else:
+    fl.server.start_server(
+        server_address="0.0.0.0:5000",
+        config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
+        strategy=strategy,
+        interceptors=[token_interceptor],
+    )
