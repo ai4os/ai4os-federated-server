@@ -121,6 +121,7 @@ if bool(DP_BOOL):
         strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
     
     )
+    # Flower FL server with DP:
     fl.server.start_server(
         server_address="0.0.0.0:5000",
         config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
@@ -128,6 +129,7 @@ if bool(DP_BOOL):
         interceptors=[token_interceptor],
     )
 else:
+    # Flower FL server:
     fl.server.start_server(
         server_address="0.0.0.0:5000",
         config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
