@@ -17,7 +17,7 @@ FEDAVGM_SERVER_MOMENTUM = os.environ["FEDAVGM_SERVER_MOMENTUM"]
 DP_BOOL: bool = os.environ['DP']
 NOISE_MULTIPLIER = os.environ["NOISE_MULT"]
 CLIPPING_NORM = os.environ["CLIP_NORM"]
-SAMPLED_CLIENTS: int = int(os.environ['SAMPLED_CLIENTS'])
+SAMPLED_CLIENTS = os.environ['SAMPLED_CLIENTS']
 
 
 # Weighted average of the metric:
@@ -111,7 +111,8 @@ elif FEDERATED_STRATEGY == "Adaptive Federated Optimization using Yogi (FedYogi)
     )
 
 
-if bool(DP_BOOL):
+if DP_BOOL==True:
+    SAMPLED_CLIENTS = int(SAMPLED_CLIENTS)
     dp_strategy = DifferentialPrivacyServerSideFixedClipping(
         strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
     
