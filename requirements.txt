@@ -2,5 +2,5 @@
 # Versions are taken from the relevant docker image #
 #
 
-flwr @ git+https://github.com/AI4EOSC/flower@uuid_for_clients
+flwr == 1.11
 tensorflow >= 2.12
