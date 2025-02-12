@@ -2,5 +2,6 @@
 # Versions are taken from the relevant docker image #
 #
 
-flwr == 1.11
+git+https://github.com/AI4EOSC/flower.git@metric_privacy
 tensorflow >= 2.12
+scipy == 1.15
