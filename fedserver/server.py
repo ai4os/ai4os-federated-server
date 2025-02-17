@@ -126,14 +126,14 @@ if DP_BOOL==True:
             strategy=dp_strategy,
     )
     elif METRIC_PRIVACY == True:
-        dp_strategy = MetricDifferentialPrivacyServerSideFixedClipping(
+        mdp_strategy = MetricDifferentialPrivacyServerSideFixedClipping(
             strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
         
         )
         fl.server.start_server(
             server_address="0.0.0.0:5000",
             config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
-            strategy=dp_strategy,
+            strategy=mdp_strategy,
         )
 else:
     fl.server.start_server(
