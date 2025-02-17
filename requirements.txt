@@ -7,3 +7,4 @@ flwr @ git+https://github.com/AI4EOSC/flower.git@credentials
 hvac
 jwt
 tensorflow >= 2.12
+scipy == 1.15
