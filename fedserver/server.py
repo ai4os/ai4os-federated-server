@@ -23,6 +23,7 @@ FEDAVGM_SERVER_MOMENTUM = os.environ["FEDAVGM_SERVER_MOMENTUM"]
 UUID: str = os.environ["NOMAD_JOB_NAME"][8:]
 USER: str = os.environ["NOMAD_META_owner"]
 VAULT_TOKEN: str = os.environ["VAULT_TOKEN"]
+NOMAD_NAMESPACE: str = os.environ["NOMAD_NAMESPACE"]
 DP_BOOL: bool = os.environ['DP']
 NOISE_MULTIPLIER = os.environ["NOISE_MULT"]
 CLIPPING_NORM = os.environ["CLIP_NORM"]
@@ -113,7 +114,7 @@ token_interceptor = ai4flwr.auth.vault.VaultBearerTokenInterceptor(
     vault_addr="https://vault.services.fedcloud.eu:8200/",
     vault_token=VAULT_TOKEN,
     vault_mountpoint="/secrets/",
-    secret_path=f"users/{USER}/deployments/{UUID}/federated",
+    secret_path=f"users/{USER}/vo.{NOMAD_NAMESPACE}.eu/deployments/{UUID}/federated",
 )
 
 log(INFO, "Token interceptor created")
