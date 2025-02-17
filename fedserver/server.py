@@ -8,6 +8,7 @@ import tensorflow as tf
 from flwr.common.logger import log
 from flwr.common import ndarrays_to_parameters
 from flwr.server.strategy import DifferentialPrivacyServerSideFixedClipping
+from flwr.server.strategy import MetricDifferentialPrivacyServerSideFixedClipping
 
 INFO = logging.INFO
 
@@ -26,6 +27,7 @@ DP_BOOL: bool = os.environ['DP']
 NOISE_MULTIPLIER = os.environ["NOISE_MULT"]
 CLIPPING_NORM = os.environ["CLIP_NORM"]
 SAMPLED_CLIENTS: int = int(os.environ['SAMPLED_CLIENTS'])
+METRIC_PRIVACY = os.environ['METRIC_PRIVACY']
 
 
 # Weighted average of the metric:
@@ -116,23 +118,33 @@ token_interceptor = ai4flwr.auth.vault.VaultBearerTokenInterceptor(
 
 log(INFO, "Token interceptor created")
 
-if bool(DP_BOOL):
-    dp_strategy = DifferentialPrivacyServerSideFixedClipping(
-        strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
-    
-    )
-    # Flower FL server with DP:
-    fl.server.start_server(
-        server_address="0.0.0.0:5000",
-        config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
-        strategy=dp_strategy,
-        interceptors=[token_interceptor],
-    )
+
+if DP_BOOL:
+    SAMPLED_CLIENTS = int(SAMPLED_CLIENTS)
+    if METRIC_PRIVACY:
+        mdp_strategy = MetricDifferentialPrivacyServerSideFixedClipping(
+            strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
+        
+        )
+        fl.server.start_server(
+            server_address="0.0.0.0:5000",
+            config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
+            strategy=mdp_strategy,
+        )
+    else:
+        dp_strategy = DifferentialPrivacyServerSideFixedClipping(
+            strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
+        
+        )
+        fl.server.start_server(
+            server_address="0.0.0.0:5000",
+            config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
+            strategy=dp_strategy,
+        )
+        
 else:
-    # Flower FL server:
     fl.server.start_server(
         server_address="0.0.0.0:5000",
         config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
         strategy=strategy,
-        interceptors=[token_interceptor],
     )
