@@ -113,19 +113,9 @@ elif FEDERATED_STRATEGY == "Adaptive Federated Optimization using Yogi (FedYogi)
     )
 
 
-if DP_BOOL==True:
+if DP_BOOL:
     SAMPLED_CLIENTS = int(SAMPLED_CLIENTS)
-    if METRIC_PRIVACY == False:
-        dp_strategy = DifferentialPrivacyServerSideFixedClipping(
-            strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
-        
-        )
-        fl.server.start_server(
-            server_address="0.0.0.0:5000",
-            config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
-            strategy=dp_strategy,
-    )
-    elif METRIC_PRIVACY == True:
+    if METRIC_PRIVACY:
         mdp_strategy = MetricDifferentialPrivacyServerSideFixedClipping(
             strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
         
@@ -135,6 +125,17 @@ if DP_BOOL==True:
             config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
             strategy=mdp_strategy,
         )
+    else:
+        dp_strategy = DifferentialPrivacyServerSideFixedClipping(
+            strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
+        
+        )
+        fl.server.start_server(
+            server_address="0.0.0.0:5000",
+            config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
+            strategy=dp_strategy,
+        )
+        
 else:
     fl.server.start_server(
         server_address="0.0.0.0:5000",
