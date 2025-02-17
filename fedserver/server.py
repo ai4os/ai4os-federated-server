@@ -4,6 +4,7 @@ import flwr as fl
 import tensorflow as tf
 from flwr.common import ndarrays_to_parameters
 from flwr.server.strategy import DifferentialPrivacyServerSideFixedClipping
+from flwr.server.strategy import MetricDifferentialPrivacyServerSideFixedClipping
 
 
 FEDERATED_ROUNDS: int = int(os.environ['FEDERATED_ROUNDS'])
@@ -18,6 +19,7 @@ DP_BOOL: bool = os.environ['DP']
 NOISE_MULTIPLIER = os.environ["NOISE_MULT"]
 CLIPPING_NORM = os.environ["CLIP_NORM"]
 SAMPLED_CLIENTS = os.environ['SAMPLED_CLIENTS']
+METRIC_PRIVACY = os.environ['METRIC_PRIVACY']
 
 
 # Weighted average of the metric:
@@ -113,15 +115,26 @@ elif FEDERATED_STRATEGY == "Adaptive Federated Optimization using Yogi (FedYogi)
 
 if DP_BOOL==True:
     SAMPLED_CLIENTS = int(SAMPLED_CLIENTS)
-    dp_strategy = DifferentialPrivacyServerSideFixedClipping(
-        strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
-    
+    if METRIC_PRIVACY == False:
+        dp_strategy = DifferentialPrivacyServerSideFixedClipping(
+            strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
+        
+        )
+        fl.server.start_server(
+            server_address="0.0.0.0:5000",
+            config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
+            strategy=dp_strategy,
     )
-    fl.server.start_server(
-        server_address="0.0.0.0:5000",
-        config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
-        strategy=dp_strategy,
-    )
+    elif METRIC_PRIVACY == True:
+        dp_strategy = MetricDifferentialPrivacyServerSideFixedClipping(
+            strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
+        
+        )
+        fl.server.start_server(
+            server_address="0.0.0.0:5000",
+            config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
+            strategy=dp_strategy,
+        )
 else:
     fl.server.start_server(
         server_address="0.0.0.0:5000",
