@@ -5,3 +5,4 @@
 flwr @ git+https://github.com/AI4EOSC/flower.git@metric_privacy
 tensorflow >= 2.12
 scipy == 1.15
+codecarbon == 2.8.3
