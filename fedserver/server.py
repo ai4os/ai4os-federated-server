@@ -5,6 +5,7 @@ import tensorflow as tf
 from flwr.common import ndarrays_to_parameters
 from flwr.server.strategy import DifferentialPrivacyServerSideFixedClipping
 from flwr.server.strategy import MetricDifferentialPrivacyServerSideFixedClipping
+from codecarbon import OfflineEmissionsTracker
 
 
 FEDERATED_ROUNDS: int = int(os.environ['FEDERATED_ROUNDS'])
@@ -19,7 +20,14 @@ DP_BOOL: bool = os.environ['DP']
 NOISE_MULTIPLIER = os.environ["NOISE_MULT"]
 CLIPPING_NORM = os.environ["CLIP_NORM"]
 SAMPLED_CLIENTS = os.environ['SAMPLED_CLIENTS']
-METRIC_PRIVACY = os.environ['METRIC_PRIVACY']
+# METRIC_PRIVACY = os.environ['METRIC_PRIVACY']
+# CODE_CARBON: bool = os.environ['CODE_CARBON']
+CODE_CARBON = False
+DATA_CENTER = os.environ['NOMAD_DC']
+if DATA_CENTER == 'iisas-ai4eosc':
+    COUNTRY = 'SVK'
+else:
+    COUNTRY = 'ESP'
 
 
 # Weighted average of the metric:
@@ -112,33 +120,134 @@ elif FEDERATED_STRATEGY == "Adaptive Federated Optimization using Yogi (FedYogi)
         initial_parameters = initial_parameters
     )
 
-
-if DP_BOOL:
-    SAMPLED_CLIENTS = int(SAMPLED_CLIENTS)
-    if METRIC_PRIVACY:
-        mdp_strategy = MetricDifferentialPrivacyServerSideFixedClipping(
-            strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
+class AggregateEmissions(type(strategy)):
+    def __init__(self, strategy):
+        params = strategy.__dict__
+        super().__init__(**params)
         
+    def aggregate_fit(self, server_round, results, failures):
+        server_tracker = OfflineEmissionsTracker(
+            country_iso_code=COUNTRY, save_to_file=False
         )
+        server_tracker.start()
+        aggregated_parameters, aggregated_metrics = super().aggregate_fit(server_round, results, failures)
+
+        # Emissions from clients
+        client_emissions = [res.metrics["emissions"] for _, res in results if "emissions" in res.metrics]
+        total_client_emissions = sum(client_emissions) if client_emissions else 0.0
+        
+        # Server-side emissions
+        server_emissions = server_tracker.stop()
+        
+        total_emissions = total_client_emissions + server_emissions
+        print(f"ROUND {server_round}. Total Carbon Emissions (server and clients): {total_emissions} kg CO2")
+
+        return aggregated_parameters, {"total_emissions": total_emissions}
+
+
+class AggregateEmissionsDP(DifferentialPrivacyServerSideFixedClipping):
+    def __init__(self, strategy):
+        super().__init__(
+            strategy, 
+            noise_multiplier=float(NOISE_MULTIPLIER), 
+            clipping_norm=float(CLIPPING_NORM), 
+            num_sampled_clients=SAMPLED_CLIENTS
+        )
+        
+    def aggregate_fit(self, server_round, results, failures):
+        server_tracker = OfflineEmissionsTracker(
+            country_iso_code=COUNTRY, save_to_file=False
+        )
+        server_tracker.start()
+        aggregated_parameters, aggregated_metrics = super().aggregate_fit(server_round, results, failures)
+
+        # Emissions from clients
+        client_emissions = [res.metrics["emissions"] for _, res in results if "emissions" in res.metrics]
+        total_client_emissions = sum(client_emissions) if client_emissions else 0.0
+        
+        # Server-side emissions
+        server_emissions = server_tracker.stop()
+        
+        total_emissions = total_client_emissions + server_emissions
+        print(f"ROUND {server_round}. Total Carbon Emissions (server and clients): {total_emissions} kg CO2")
+
+        return aggregated_parameters, {"total_emissions": total_emissions}
+
+
+class AggregateEmissionsMDP(MetricDifferentialPrivacyServerSideFixedClipping):
+    def __init__(self, strategy):
+        super().__init__(
+            strategy, 
+            noise_multiplier=float(NOISE_MULTIPLIER), 
+            clipping_norm=float(CLIPPING_NORM), 
+            num_sampled_clients=SAMPLED_CLIENTS
+        )
+        
+    def aggregate_fit(self, server_round, results, failures):
+        server_tracker = OfflineEmissionsTracker(
+            country_iso_code=COUNTRY, save_to_file=False
+        )
+        server_tracker.start()
+        aggregated_parameters, aggregated_metrics = super().aggregate_fit(server_round, results, failures)
+
+        # Emissions from clients
+        client_emissions = [res.metrics["emissions"] for _, res in results if "emissions" in res.metrics]
+        total_client_emissions = sum(client_emissions) if client_emissions else 0.0
+        
+        # Server-side emissions
+        server_emissions = server_tracker.stop()
+        
+        total_emissions = total_client_emissions + server_emissions
+        print(f"ROUND {server_round}. Total Carbon Emissions (server and clients): {total_emissions} kg CO2")
+
+        return aggregated_parameters, {"total_emissions": total_emissions}
+
+        
+if DP_BOOL is True:
+    SAMPLED_CLIENTS = int(SAMPLED_CLIENTS)
+    if METRIC_PRIVACY is True:
+        if CODE_CARBON is True:
+            fl.server.start_server(
+                server_address="0.0.0.0:5000",
+                config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
+                strategy=AggregateEmissionsMDP(strategy),
+            )
+        else:    
+            mdp_strategy = MetricDifferentialPrivacyServerSideFixedClipping(
+                strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
+            )
+            fl.server.start_server(
+                server_address="0.0.0.0:5000",
+                config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
+                strategy=mdp_strategy,
+            )
+    else:
+        if CODE_CARBON is True:
+            fl.server.start_server(
+                server_address="0.0.0.0:5000",
+                config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
+                strategy=AggregateEmissionsDP(strategy),
+            )
+        else:
+            dp_strategy = DifferentialPrivacyServerSideFixedClipping(
+                strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
+            
+            )
+            fl.server.start_server(
+                server_address="0.0.0.0:5000",
+                config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
+                strategy=dp_strategy,
+            )
+else:
+    if CODE_CARBON is True:
         fl.server.start_server(
             server_address="0.0.0.0:5000",
             config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
-            strategy=mdp_strategy,
+            strategy=AggregateEmissions(strategy),
         )
     else:
-        dp_strategy = DifferentialPrivacyServerSideFixedClipping(
-            strategy, noise_multiplier=float(NOISE_MULTIPLIER), clipping_norm=float(CLIPPING_NORM), num_sampled_clients=SAMPLED_CLIENTS
-        
-        )
         fl.server.start_server(
             server_address="0.0.0.0:5000",
             config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
-            strategy=dp_strategy,
+            strategy=strategy,
         )
-        
-else:
-    fl.server.start_server(
-        server_address="0.0.0.0:5000",
-        config=fl.server.ServerConfig(num_rounds=FEDERATED_ROUNDS),
-        strategy=strategy,
-    )
