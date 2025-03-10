@@ -30,8 +30,7 @@ NOISE_MULTIPLIER = os.environ["NOISE_MULT"]
 CLIPPING_NORM = os.environ["CLIP_NORM"]
 SAMPLED_CLIENTS: int = int(os.environ['SAMPLED_CLIENTS'])
 METRIC_PRIVACY = os.environ['METRIC_PRIVACY']
-# CODE_CARBON: bool = os.environ['CODE_CARBON']
-CODE_CARBON = False
+CODE_CARBON: bool = os.environ['CODE_CARBON']
 DATA_CENTER = os.environ['NOMAD_DC']
 if DATA_CENTER == 'iisas-ai4eosc':
     COUNTRY = 'SVK'
