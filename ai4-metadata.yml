@@ -1,6 +1,6 @@
 metadata_version: 2.0.0
-title: Federated learning server
-summary: Federated learning server with Flower.
+title: Federated learning with Flower
+summary: Run federated learning trainings using the Flower framework.
 description: |-
   Federated Learning server deployed using [Flower](https://flower.ai/).
   
