@@ -10,6 +10,7 @@ from flwr.common import ndarrays_to_parameters
 from flwr.server.strategy import DifferentialPrivacyServerSideFixedClipping
 from flwr.server.strategy import MetricDifferentialPrivacyServerSideFixedClipping
 from codecarbon import OfflineEmissionsTracker
+from fedavgopt import FedAvgOpt
 
 INFO = logging.INFO
 
@@ -114,6 +115,12 @@ elif FEDERATED_STRATEGY == "Adaptive Federated Optimization using Yogi (FedYogi)
         min_fit_clients=FEDERATED_MIN_AVAILABLE_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
         initial_parameters = initial_parameters
+    )
+elif FEDERATED_STRATEGY == "FedAvgOpt":
+    strategy = FedAvgOpt(
+        min_available_clients=FEDERATED_MIN_FIT_CLIENTS,
+        min_fit_clients=FEDERATED_MIN_AVAILABLE_CLIENTS,
+        evaluate_metrics_aggregation_fn=wavg_metric,
     )
 
 class AggregateEmissions(type(strategy)):
