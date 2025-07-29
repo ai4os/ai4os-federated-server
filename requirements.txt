@@ -2,7 +2,7 @@
 # Versions are taken from the relevant docker image #
 #
 
-ai4flwr @ git+https://github.com/ai4os/ai4-flwr@develop
+ai4flwr @ git+https://github.com/ai4os/ai4-flwr@dp_tokens
 flwr @ git+https://github.com/AI4EOSC/flower.git@credentials
 hvac
 jwt
