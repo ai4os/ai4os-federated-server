@@ -2,11 +2,14 @@ import os
 import ast
 import flwr as fl
 import tensorflow as tf
+from flwr.common.logger import log
 from flwr.common import ndarrays_to_parameters
 from flwr.server.strategy import DifferentialPrivacyServerSideFixedClipping
 from flwr.server.strategy import MetricDifferentialPrivacyServerSideFixedClipping
 from codecarbon import OfflineEmissionsTracker
 from fedavgopt import FedAvgOpt
+
+INFO = logging.INFO
 
 
 FEDERATED_ROUNDS: int = int(os.environ['FEDERATED_ROUNDS'])
@@ -37,7 +40,7 @@ def wavg_metric(metrics):
     try:
         list_metrics = ast.literal_eval(FEDERATED_METRIC)
     except ValueError:
-        print("Only one metric has been entered.")
+        log(INFO, "Only one metric has been entered.")
     if len(list_metrics) == 0:
         n = sum([i for i, _ in metrics])
         wavg_metric = sum([i * metric[FEDERATED_METRIC] / n for i, metric in metrics])
@@ -121,8 +124,8 @@ elif FEDERATED_STRATEGY == "Adaptive Federated Optimization using Yogi (FedYogi)
     )
 elif FEDERATED_STRATEGY == "FedAvgOpt":
     strategy = FedAvgOpt(
-        min_available_clients=FEDERATED_MIN_CLIENTS,
-        min_fit_clients=FEDERATED_MIN_CLIENTS,
+        min_available_clients=FEDERATED_MIN_FIT_CLIENTS,
+        min_fit_clients=FEDERATED_MIN_AVAILABLE_CLIENTS,
         evaluate_metrics_aggregation_fn=wavg_metric,
     )
 
