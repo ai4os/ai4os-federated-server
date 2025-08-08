@@ -46,7 +46,7 @@ def wavg_metric(metrics):
     try:
         list_metrics = ast.literal_eval(FEDERATED_METRIC)
     except ValueError:
-        print("Only one metric has been entered.")
+        log(INFO, "Only one metric has been entered.")
     if len(list_metrics) == 0:
         n = sum([i for i, _ in metrics])
         wavg_metric = sum([i * metric[FEDERATED_METRIC] / n for i, metric in metrics])
