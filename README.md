@@ -20,6 +20,7 @@ Possible aggregation strategies introduced as *FEDERATED_STRATEGY* (see the impl
 * **Adaptive Federated Optimization using Yogi** *(FedYogi)* [3]
 * **Federated Averaging with Momentum** *(FedAvgM)* [4]
 * **Federated Median** *(FedMedian)* [5]
+* **FedAvgOpt** [6]
 
 The associated Docker image(s) for this module can be found in https://hub.docker.com/r/ai4oshub/ai4os-federated-server.
 
@@ -50,3 +51,5 @@ Federated server.
 [4] Hsu, T. M. H., Qi, H., & Brown, M. (2019). Measuring the effects of non-identical data distribution for federated visual classification. arXiv preprint arXiv:1909.06335.
 
 [5] Yin, D., Chen, Y., Kannan, R., & Bartlett, P. (2018, July). Byzantine-robust distributed learning: Towards optimal statistical rates. In International conference on machine learning (pp. 5650-5659). Pmlr.
+
+[6] Sáinz-Pardo Díaz, J., & López García, Á. (2025). Enhancing the Convergence of Federated Learning Aggregation Strategies with Limited Data. arXiv e-prints, arXiv-2501.
