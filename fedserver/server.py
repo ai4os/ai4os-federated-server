@@ -27,10 +27,11 @@ USER: str = os.environ["NOMAD_META_owner"]
 VAULT_TOKEN: str = os.environ["VAULT_TOKEN"]
 NOMAD_NAMESPACE: str = os.environ["NOMAD_NAMESPACE"]
 DP_BOOL: bool = os.environ['DP']
-NOISE_MULTIPLIER = os.environ["NOISE_MULT"]
-CLIPPING_NORM = os.environ["CLIP_NORM"]
-SAMPLED_CLIENTS: int = int(os.environ['SAMPLED_CLIENTS'])
-METRIC_PRIVACY = os.environ['METRIC_PRIVACY']
+if DP_BOOL is True:
+    NOISE_MULTIPLIER = os.environ["NOISE_MULT"]
+    CLIPPING_NORM = os.environ["CLIP_NORM"]
+    SAMPLED_CLIENTS: int = int(os.environ['SAMPLED_CLIENTS'])
+    METRIC_PRIVACY = os.environ['METRIC_PRIVACY']
 CODE_CARBON: bool = os.environ['CODE_CARBON']
 DATA_CENTER = os.environ['NOMAD_DC']
 if DATA_CENTER == 'iisas-ai4eosc':
