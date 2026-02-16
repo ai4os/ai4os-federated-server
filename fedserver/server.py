@@ -8,6 +8,7 @@ from flwr.server.strategy import DifferentialPrivacyServerSideFixedClipping
 from flwr.server.strategy import MetricDifferentialPrivacyServerSideFixedClipping
 from codecarbon import OfflineEmissionsTracker
 from fedavgopt import FedAvgOpt
+import logging
 
 INFO = logging.INFO
 
